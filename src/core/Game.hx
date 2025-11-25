@@ -8,6 +8,7 @@ import core.scene.PreloadScene;
 import core.scene.Scene;
 import core.system.Camera;
 import core.system.KeysInput;
+import core.system.MouseInput;
 import core.util.ScalerExp;
 import core.util.TiledMap;
 import kha.Assets;
@@ -17,6 +18,7 @@ import kha.Scheduler;
 import kha.System;
 import kha.input.KeyCode;
 import kha.input.Keyboard;
+import kha.input.Mouse;
 
 enum ScaleMode {
     Full;
@@ -50,6 +52,8 @@ class Game {
     // Keyboard input controller.
     public static var keys:KeysInput = new KeysInput();
 
+    public static var mouse:MouseInput = new MouseInput();
+
     public function new (name:String, width:Int, height:Int, scaleMode:ScaleMode, initialScene:Scene, ?bufferWidth:Int, ?bufferHeight:Int) {
         // size = IntVec2.make(width, height)
         this.width = width;
@@ -72,6 +76,10 @@ class Game {
 
             if (Keyboard.get() != null) {
                 Keyboard.get().notify(keys.pressButton, keys.releaseButton);
+            }
+
+            if (Mouse.get() != null) {
+                Mouse.get().notify(mouse.pressMouse, mouse.releaseMouse, mouse.mouseMove);
             }
 
             Assets.loadEverything(() -> {
@@ -119,16 +127,11 @@ class Game {
             // if (!s.isPaused) {
                 s.update(delta);
             // }
-
-            // resize the camera if we use the `Full` scale mode.
-            if (scaleMode == Full) {
-                s.camera.width = width;
-                s.camera.height = height;
-            }
         }
 
         // after the scenes to clear `justPressed`
         keys.update(UPDATE_TIME);
+        mouse.update(UPDATE_TIME);
 
         currentTime = now;
     }
@@ -181,6 +184,9 @@ class Game {
         setSize(framebuffer.width, framebuffer.height);
 
         for (s in 0...scenes.length) {
+            // resize the camera if we use the `Full` scale mode.
+            scenes[s].camera.width = width;
+            scenes[s].camera.height = height;
             scenes[s].render(framebuffer.g2, /* framebuffer.g4 */ s == 0);
         }
     }
