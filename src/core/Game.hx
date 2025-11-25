@@ -15,6 +15,7 @@ import kha.Assets;
 import kha.Framebuffer;
 import kha.Image;
 import kha.Scheduler;
+import kha.ScreenCanvas;
 import kha.System;
 import kha.input.KeyCode;
 import kha.input.Keyboard;
@@ -79,7 +80,14 @@ class Game {
             }
 
             if (Mouse.get() != null) {
-                Mouse.get().notify(mouse.pressMouse, mouse.releaseMouse, mouse.mouseMove);
+                if (scaleMode == Full) {
+                    Mouse.get().notify(mouse.pressMouse, mouse.releaseMouse, mouse.mouseMove);
+                    // Surface.get().notify(surface.press, surface.release, surface.move);
+                } else {
+                    // need to handle screen position and screen scale
+                    Mouse.get().notify(mouse.pressMouse, mouse.releaseMouse, onMouseMove);
+                    // Surface.get().notify(surface.press, surface.release, onSurfaceMove);
+                }
             }
 
             Assets.loadEverything(() -> {
@@ -203,6 +211,17 @@ class Game {
             // framebuffer.g2.pipeline = fullScreenPipeline;
             ScalerExp.scalePixelPerfect(backbuffer, framebuffer);
         framebuffer.g2.end();
+    }
+
+    function onMouseMove (x:Int, y:Int, moveX:Int, moveY:Int) {
+        // NOTE: pass in scaling when there is zoom?
+        // NOTE: should i use buffer size instead of `ScreenCavas`?
+        mouse.mouseMove(
+            ScalerExp.transformPixelPerfectX(x, backbuffer, ScreenCanvas.the),
+            ScalerExp.transformPixelPerfectY(y, backbuffer, ScreenCanvas.the),
+            ScalerExp.transformPixelPerfectX(x, backbuffer, ScreenCanvas.the),
+            ScalerExp.transformPixelPerfectY(y, backbuffer, ScreenCanvas.the)
+        );
     }
 
     public function changeScene (scene:Scene, ?callback:Void -> Void) {
