@@ -16,7 +16,7 @@ class BitmapText extends GameObject {
         this.y = y;
         this.image = image;
         this.font = font;
-        this.text = text;
+        setText(text);
     }
 
     override function update (delta:Float) {}

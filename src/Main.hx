@@ -14,8 +14,9 @@ class Main {
         new Game(
             'boiler',
             1280, 720,
-            Full,
+            PixelPerfect,
             new GameScene(),
+            320, 180
         );
 
         // new Game(
@@ -55,8 +56,13 @@ class Main {
                 w = window.innerWidth;
                 h = window.innerHeight;
             }
-            canvas.width = Std.int(w);
-            canvas.height = Std.int(h);
+            // WARN: can cause some weird issues with window.devicePixelRatio
+            canvas.width = Std.int(w * window.devicePixelRatio);
+            canvas.height = Std.int(h * window.devicePixelRatio);
+            if (canvas.style.width == '') {
+                canvas.style.width = '100%';
+                canvas.style.height = '100%';
+            }
         }
         window.onresize = resize;
         resize();

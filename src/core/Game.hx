@@ -1,23 +1,17 @@
 package core;
 
-import core.components.Family;
-import core.components.FrameAnim;
-import core.gameobjects.Sprite;
-import core.gameobjects.Tilemap;
 import core.scene.PreloadScene;
 import core.scene.Scene;
 import core.system.Camera;
 import core.system.KeysInput;
 import core.system.MouseInput;
 import core.util.ScalerExp;
-import core.util.TiledMap;
 import kha.Assets;
 import kha.Framebuffer;
 import kha.Image;
 import kha.Scheduler;
 import kha.ScreenCanvas;
 import kha.System;
-import kha.input.KeyCode;
 import kha.input.Keyboard;
 import kha.input.Mouse;
 
@@ -80,13 +74,10 @@ class Game {
             }
 
             if (Mouse.get() != null) {
-                if (scaleMode == Full) {
-                    Mouse.get().notify(mouse.pressMouse, mouse.releaseMouse, mouse.mouseMove);
-                    // Surface.get().notify(surface.press, surface.release, surface.move);
-                } else {
-                    // need to handle screen position and screen scale
+                if (scaleMode == PixelPerfect) {
                     Mouse.get().notify(mouse.pressMouse, mouse.releaseMouse, onMouseMove);
-                    // Surface.get().notify(surface.press, surface.release, onSurfaceMove);
+                } else {
+                    Mouse.get().notify(mouse.pressMouse, mouse.releaseMouse, mouse.mouseMove);
                 }
             }
 
@@ -144,49 +135,15 @@ class Game {
         currentTime = now;
     }
 
-    // function update () {
-    //     final now = Scheduler.time();
-    //     final delta = now - currentTime;
-
-    //     // update mouse for camera position
-    //     final camExists = scenes[0] != null;
-    //     mouse.setMousePos(
-    //         Std.int(
-    //             (camExists ? scenes[0].camera.scroll.x : 0) + mouse.screenPos.x /
-    //             (camExists ? scenes[0].camera.scale.x : 0)
-    //         ),
-    //         Std.int(
-    //             (camExists ? scenes[0].camera.scroll.y : 0) + mouse.screenPos.y /
-    //             (camExists ? scenes[0].camera.scale.y : 0)
-    //         )
-    //     );
-
-    //     for (s in newScenes) scenes.push(s);
-    //     newScenes = [];
-    //     for (s in scenes) {
-    //         if (!s.isPaused) {
-    //             s.updateProgress(Assets.progress);
-    //             s.update(UPDATE_TIME);
-    //         }
-
-    //         // resize the camera if we use the `Full` scale mode.
-    //         if (scaleMode == Full) {
-    //             s.camera.width = size.x;
-    //             s.camera.height = size.y;
-    //         }
-    //     }
-    //     scenes = scenes.filter((s) -> !s._destroyed);
-
-    //     // after the scenes to clear `justPressed`
-    //     keys.update(UPDATE_TIME);
-    //     mouse.update(UPDATE_TIME);
-    //     surface.update(UPDATE_TIME);
-    //     for (g in gamepads.list) {
-    //         g.update(UPDATE_TIME);
-    //     }
-
-    //     currentTime = now;
-    // }
+    function onMouseMove (x:Int, y:Int, moveX:Int, moveY:Int) {
+        // NOTE: pass in scaling when there is zoom?
+        mouse.mouseMove(
+            ScalerExp.transformPixelPerfectX(x, backbuffer, ScreenCanvas.the),
+            ScalerExp.transformPixelPerfectY(y, backbuffer, ScreenCanvas.the),
+            ScalerExp.transformPixelPerfectX(x, backbuffer, ScreenCanvas.the),
+            ScalerExp.transformPixelPerfectY(y, backbuffer, ScreenCanvas.the)
+        );
+    }
 
     function render (framebuffer:Framebuffer) {
         setSize(framebuffer.width, framebuffer.height);
@@ -211,17 +168,6 @@ class Game {
             // framebuffer.g2.pipeline = fullScreenPipeline;
             ScalerExp.scalePixelPerfect(backbuffer, framebuffer);
         framebuffer.g2.end();
-    }
-
-    function onMouseMove (x:Int, y:Int, moveX:Int, moveY:Int) {
-        // NOTE: pass in scaling when there is zoom?
-        // NOTE: should i use buffer size instead of `ScreenCavas`?
-        mouse.mouseMove(
-            ScalerExp.transformPixelPerfectX(x, backbuffer, ScreenCanvas.the),
-            ScalerExp.transformPixelPerfectY(y, backbuffer, ScreenCanvas.the),
-            ScalerExp.transformPixelPerfectX(x, backbuffer, ScreenCanvas.the),
-            ScalerExp.transformPixelPerfectY(y, backbuffer, ScreenCanvas.the)
-        );
     }
 
     public function changeScene (scene:Scene, ?callback:Void -> Void) {

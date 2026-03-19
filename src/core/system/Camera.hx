@@ -6,7 +6,7 @@ import core.util.Util;
 
 // NOTE: pixel-locked camera. scrollXDiff and scrollYDiff are properties to help
 // deal with jitter issues
-class Camera extends System {
+class Camera {
     public var bgColor:Int = 0xff000000;
 
     public var scrollX:Float = 0.0;
@@ -32,12 +32,11 @@ class Camera extends System {
     public var lerpY:Float = 1.0;
 
     public function new (width:Int, height:Int) {
-        super();
         this.width = width;
         this.height = height;
     }
 
-    override function update (delta:Float) {
+    public function update (delta:Float) {
         if (followX != null) {
             scrollX = lerp(followX.getMiddleX() - width / 2, scrollX, lerpX);
             // TEMP: wont work with lerp

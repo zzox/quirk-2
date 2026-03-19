@@ -2,7 +2,9 @@ package core.system;
 
 import core.Types;
 
-class MouseInput extends System {
+class MouseInput {
+    public function new () {}
+
     var _pressed:Array<Int> = [];
     var _justPressed:Array<Int> = [];
     var _justReleased:Array<Int> = [];
@@ -28,7 +30,7 @@ class MouseInput extends System {
     //     position.set(x, y);
     // }
 
-    override function update (delta:Float) {
+    public function update (delta:Float) {
         _justPressed.resize(0);
         _justReleased.resize(0);
         // for (btn in _pressed) { btn.time += delta; };

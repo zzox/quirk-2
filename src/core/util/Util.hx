@@ -1,6 +1,7 @@
 package core.util;
 
 import core.Types;
+import kha.math.Random;
 
 function clamp (value:Float, min:Float, max:Float) {
     return Math.max(Math.min(value, max), min);
@@ -65,6 +66,29 @@ function average (arr:Array<Float>):Float {
     }, 0) / arr.length;
 }
 
-function randomItem <T>(items:Array<T>):T {
-    return items[Math.floor(Math.random() * items.length)];
+function nanZero (num:Float):Float {
+    if (Math.isNaN(num)) {
+        return 0.0;
+    }
+
+    return num;
+}
+
+function nanZeroDiv (num:Float, denom:Float):Float {
+    if (denom == 0) {
+        return 0;
+    }
+
+    return num / denom;
+}
+
+function shuffle<T> (items:Array<T>, rand:Random):Array<T> {
+    for (i in 0...items.length) {
+        final index = Math.floor(rand.GetFloat() * items.length);
+        final temp = items[i];
+        items[i] = items[index];
+        items[index] = temp;
+    }
+
+    return items;
 }

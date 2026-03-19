@@ -2,7 +2,9 @@ package core.system;
 
 import kha.input.KeyCode;
 
-class KeysInput extends System {
+class KeysInput {
+    public function new () {}
+
     var _pressed:Array<KeyCode> = [];
     var _justPressed:Array<KeyCode> = [];
     var _justReleased:Array<KeyCode> = [];
@@ -21,7 +23,7 @@ class KeysInput extends System {
         _justReleased.push(code);
     }
 
-    override function update (delta:Float) {
+    public function update (delta:Float) {
         _justPressed.resize(0);
         _justReleased.resize(0);
         // for (btn in _pressed) { btn.time += delta; };

@@ -1,22 +1,19 @@
 package core.gameobjects;
 
-import core.components.FrameAnim;
-import core.components.PhysicsBody;
 import core.system.Camera;
+import core.util.Util;
 import kha.Image;
 import kha.graphics2.Graphics;
 
 // a selection of an image. not rotatable or scalable (presently)
 class Sprite extends GameObject {
-
     public var tileIndex:Int = 0;
     public var flipX:Bool = false;
     public var flipY:Bool = false;
 
     public var image:Image;
 
-    public var anim:Null<FrameAnim>;
-    public var body:Null<PhysicsBody>;
+    public var angle:Float;
 
     var animIndex:Int = -1;
 
@@ -28,21 +25,13 @@ class Sprite extends GameObject {
         this.image = image;
     }
 
-    public function init (?anim:FrameAnim, ?body:PhysicsBody) {
-        this.anim = anim;
-        this.body = body;
-
-        if (anim != null) {
-            anim.sprite = this;
-        }
-    }
-
     override function update (delta:Float) {}
 
     override function render (g2:Graphics, camera:Camera) {
         // TODO: move these to inlined pre and post render?
         g2.pushTranslation(-camera.scrollX * scrollFactorX, -camera.scrollY * scrollFactorY);
         g2.pushScale(camera.scale, camera.scale);
+        g2.pushRotation(toRadians(angle), x + Math.floor(sizeX / 2), y + Math.floor(sizeY / 2));
 
         g2.color = Math.floor(255 * alpha) * 0x1000000 | color;
 
@@ -60,6 +49,7 @@ class Sprite extends GameObject {
             sizeY * (flipY ? -1 : 1)
         );
 
+        g2.popTransformation();
         g2.popTransformation();
         g2.popTransformation();
     }
