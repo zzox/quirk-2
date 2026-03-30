@@ -16,6 +16,8 @@ class GameObject {
     public var sizeY:Int;
     public var scrollFactorX:Float = 1.0;
     public var scrollFactorY:Float = 1.0;
+    public var scaleX:Float = 1.0;
+    public var scaleY:Float = 1.0;
 
     public var components:Array<Component> = [];
 

@@ -158,7 +158,7 @@ class FntBitmapFont implements BitmapFont {
     // var charSize:IntVec2;
     var charMap:Map<String, CharData> = new Map();
 
-    public function new (textString:String) {
+    public function new (textString:String, offsetX:Int = 0, offsetY:Int = 0) {
         final lines = textString.split('\n');
         for (l in lines) {
             final tokens = l.split(' ');
@@ -172,8 +172,8 @@ class FntBitmapFont implements BitmapFont {
             if (tokens[0] == 'char') {
                 final fntMap = getFntCharMap(tokens);
                 charMap.set(asciiMap[fntMap['id']], {
-                    destX: fntMap['x'],
-                    destY: fntMap['y'],
+                    destX: fntMap['x'] + offsetX,
+                    destY: fntMap['y'] + offsetY,
                     destWidth: fntMap['width'],
                     destHeight: fntMap['height'],
                     width: Std.int(fntMap['xadvance']) - Std.int(fntMap['xoffset']) - 1,

@@ -45,8 +45,10 @@ class Sprite extends GameObject {
             sizeY,
             Math.floor(x + (flipX ? sizeX : 0)),
             Math.floor(y + (flipY ? sizeY : 0)),
-            sizeX * (flipX ? -1 : 1),
-            sizeY * (flipY ? -1 : 1)
+            // sizeX * (flipX ? -1 : 1),
+            // sizeY * (flipY ? -1 : 1)
+            sizeX * scaleX * (flipX ? -1 : 1),
+            sizeY * scaleY * (flipY ? -1 : 1)
         );
 
         g2.popTransformation();
