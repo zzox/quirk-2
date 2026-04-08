@@ -43,10 +43,10 @@ class Sprite extends GameObject {
             Math.floor(tileIndex / cols) * sizeY,
             sizeX,
             sizeY,
-            Math.floor(x + (flipX ? sizeX : 0)),
-            Math.floor(y + (flipY ? sizeY : 0)),
-            // sizeX * (flipX ? -1 : 1),
-            // sizeY * (flipY ? -1 : 1)
+            // Math.floor(x + (flipX ? sizeX : 0)),
+            // Math.floor(y + (flipY ? sizeY : 0)),
+            Math.floor(x + ((sizeX - sizeX * scaleX) / 2) + (flipX ? sizeX * scaleX : 0)),
+            Math.floor(y + ((sizeY - sizeY * scaleY) / 2) + (flipY ? sizeY * scaleY : 0)),
             sizeX * scaleX * (flipX ? -1 : 1),
             sizeY * scaleY * (flipY ? -1 : 1)
         );
