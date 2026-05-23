@@ -47,18 +47,11 @@ class ScalerExp {
 
     static function getPixelPerfectScaledTransformation(source:Image, destination:Canvas):FastMatrix3 {
         final scale = getPixelPerfectScale(source, destination);
-        // NOTE: flooring here for mac issue of drawing on non-rounded positions
         return new FastMatrix3(
-            scale, 0, Math.floor((destination.width - source.width * scale) * 0.5),
-            0, scale, Math.floor((destination.height - source.height * scale) * 0.5),
+            scale, 0, (destination.width - source.width * scale) * 0.5,
+            0, scale, (destination.height - source.height * scale) * 0.5,
             0, 0, 1
         );
-        // final scale = getPixelPerfectScale(source, destination);
-        // return new FastMatrix3(
-        //     scale, 0, (destination.width - source.width * scale) * 0.5,
-        //     0, scale, (destination.height - source.height * scale) * 0.5,
-        //     0, 0, 1
-        // );
     }
 
     static function getScale (source:Image, destination:Canvas):Float {

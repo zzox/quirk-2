@@ -11,10 +11,6 @@ function lerp (target:Float, current:Float, percent:Float):Float {
     return current + (target - current) * percent;
 }
 
-function randomInt (ceil:Int) {
-    return Math.floor(Math.random() * ceil);
-}
-
 function toRadians (value:Float):Float {
     return value * (Math.PI / 180);
 }
