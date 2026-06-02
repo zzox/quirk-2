@@ -19,8 +19,10 @@ class Timers {
         items = items.filter((item) -> !item.destroyed);
     }
 
-    public function addTimer (time:Float, callback:Void -> Void) {
-        items.push(new Timer(time, callback));
+    public function addTimer (time:Float, callback:Void -> Void):Timer {
+        final timer = new Timer(time, callback);
+        items.push(timer);
+        return timer;
     }
 
     public function destroy () {

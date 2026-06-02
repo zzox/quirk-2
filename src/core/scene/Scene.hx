@@ -31,6 +31,8 @@ class Scene /* implements Destroyable */ {
             if (e.active) e.update(delta);
         }
 
+        entities = entities.filter(d -> !d.destroyed);
+
         camera.update(delta);
     }
 

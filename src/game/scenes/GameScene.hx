@@ -14,7 +14,9 @@ class GameScene extends Scene {
     override function create () {
         super.create();
 
-        testSprite = new AnimSprite(0, 0, Assets.images.test_image, 16, 16, 40, [0, 1, 2, 3], true);
+        testSprite = new AnimSprite(0, 0, Assets.images.test_image, 16, 16);
+        testSprite.addAnim('play', [0, 1, 2, 3], 40, true);
+        testSprite.playAnim('play');
         entities.push(testSprite);
     }
 
