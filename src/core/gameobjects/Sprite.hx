@@ -15,8 +15,6 @@ class Sprite extends GameObject {
 
     public var angle:Float;
 
-    var animIndex:Int = -1;
-
     public function new (x:Float = 0.0, y:Float = 0.0, image:Image, ?sizeX:Int, ?sizeY:Int) {
         this.x = x;
         this.y = y;
@@ -29,9 +27,9 @@ class Sprite extends GameObject {
 
     override function render (g2:Graphics, camera:Camera) {
         // TODO: move these to inlined pre and post render?
+        g2.pushRotation(toRadians(angle), x + Math.floor(sizeX / 2), y + Math.floor(sizeY / 2));
         g2.pushTranslation(-camera.scrollX * scrollFactorX, -camera.scrollY * scrollFactorY);
         g2.pushScale(camera.scale, camera.scale);
-        g2.pushRotation(toRadians(angle), x + Math.floor(sizeX / 2), y + Math.floor(sizeY / 2));
 
         g2.color = Math.floor(255 * alpha) * 0x1000000 | color;
 
