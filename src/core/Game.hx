@@ -3,6 +3,7 @@ package core;
 import core.scene.PreloadScene;
 import core.scene.Scene;
 import core.system.Camera;
+import core.system.ImageShader;
 import core.system.KeysInput;
 import core.system.MouseInput;
 import core.util.ScalerExp;
@@ -21,7 +22,7 @@ enum ScaleMode {
 }
 
 class Game {
-    static inline final UPDATE_TIME:Float = 1 / 60;
+    public static inline final Delta:Float = 1 / 60;
 
     // time since start, set by the scheduler
     var currentTime:Float;
@@ -39,6 +40,10 @@ class Game {
     // The backbuffer being drawn on to be scaled.  Not used in scaleMode `Fit`.
     var backbuffer:Image;
 
+    var backbufferPipeline:ImageShader;
+
+    var fullscreenPipeline:ImageShader;
+
     // array of scenes about to become scenes
     var newScenes:Array<Scene> = [];
     // array of scenes to update and render
@@ -54,13 +59,14 @@ class Game {
         this.width = width;
         this.height = height;
 
-        System.start({ title: name, width: width, height: height }, (_window) -> {
+        System.start({ title: name, width: width, height: height, /*framebuffer: { samplesPerPixel: 4 } */ },  (_window) -> {
             if (scaleMode == PixelPerfect) {
                 if (bufferWidth == null || bufferHeight == null) {
                     throw 'Need buffer size';
                 }
 
                 backbuffer = Image.createRenderTarget(bufferWidth, bufferHeight);
+                backbufferPipeline = makeBasePipelineShader();
                 // backbuffer.g2.imageScaleQuality = Low;
                 this.bufferWidth = bufferWidth;
                 this.bufferHeight = bufferHeight;
@@ -68,6 +74,8 @@ class Game {
                 this.bufferWidth = -1;
                 this.bufferHeight = -1;
             }
+
+            fullscreenPipeline = makeBasePipelineShader();
 
             if (Keyboard.get() != null) {
                 Keyboard.get().notify(keys.pressButton, keys.releaseButton);
@@ -82,7 +90,7 @@ class Game {
             }
 
             Assets.loadEverything(() -> {
-                Scheduler.addTimeTask(update, 0, UPDATE_TIME);
+                Scheduler.addTimeTask(update, 0, Delta);
 
                 if (scaleMode == PixelPerfect) {
                     System.notifyOnFrames((frames) -> { renderPixelPerfect(frames[0]); });
@@ -114,7 +122,7 @@ class Game {
 #if atomic
         final delta = now - currentTime;
 #else
-        final delta = UPDATE_TIME;
+        final delta = Delta;
 #end
 
         scenes = scenes.filter((s) -> !s.destroyed);
@@ -129,8 +137,8 @@ class Game {
         }
 
         // after the scenes to clear `justPressed`
-        keys.update(UPDATE_TIME);
-        mouse.update(UPDATE_TIME);
+        keys.update(Delta);
+        mouse.update(Delta);
 
         currentTime = now;
     }
@@ -148,11 +156,13 @@ class Game {
     function render (framebuffer:Framebuffer) {
         setSize(framebuffer.width, framebuffer.height);
 
+        framebuffer.g2.pipeline = fullscreenPipeline.pipeline;
+
         for (s in 0...scenes.length) {
             // resize the camera if we use the `Full` scale mode.
             scenes[s].camera.width = width;
             scenes[s].camera.height = height;
-            scenes[s].render(framebuffer.g2, /* framebuffer.g4 */ s == 0);
+            scenes[s].render(framebuffer.g2, /* framebuffer.g4 */ s == 0, framebuffer.g4);
         }
     }
 
@@ -160,8 +170,9 @@ class Game {
         setSize(framebuffer.width, framebuffer.height);
 
         for (s in 0...scenes.length) {
+            backbuffer.g2.pipeline = backbufferPipeline.pipeline;
             // scenes[s].render(backbuffer.g2, backbuffer.g4, s == 0);
-            scenes[s].render(backbuffer.g2, s == 0);
+            scenes[s].render(backbuffer.g2, s == 0, framebuffer.g4);
         }
 
         framebuffer.g2.begin(true, 0xff000000);
@@ -264,7 +275,7 @@ class Game {
 //                         try { update(); } catch (e) { exceptionHandler(e); }
 //                     },
 //                     0,
-//                     UPDATE_TIME
+//                     Delta
 //                 );
 
 //                 if (scaleMode == Full) {

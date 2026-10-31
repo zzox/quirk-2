@@ -15,6 +15,10 @@ class GameObject {
     public var sizeY:Int;
     public var scrollFactorX:Float = 1.0;
     public var scrollFactorY:Float = 1.0;
+    public var scaleX:Float = 1.0;
+    public var scaleY:Float = 1.0;
+    public var centerX:Float = 0.5;
+    public var centerY:Float = 0.5;
 
     public var color:Int = 0xffffff;
     public var alpha:Float = 1.0;

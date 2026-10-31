@@ -39,18 +39,25 @@ class Camera {
     public function update (delta:Float) {
         if (followX != null) {
             scrollX = lerp(followX.getMiddleX() - width / 2, scrollX, lerpX);
+
+            // scrollX = lerp(followX.getMiddleX() - (width / 2) / scale, scrollX, lerpX);
             // TEMP: wont work with lerp
             scrollX = Math.floor(scrollX);
         }
 
         if (followY != null) {
             scrollY = lerp(followY.getMiddleY() - height / 2, scrollY, lerpY);
+
+            // scrollY = lerp(followY.getMiddleY() - (height / 2) / scale, scrollY, lerpY);
             // TEMP: wont work with lerp
             scrollY = Math.floor(scrollY);
         }
 
         scrollX = clamp(scrollX - offsetX, boundsMinX, boundsMaxX - width);
         scrollY = clamp(scrollY - offsetY, boundsMinY, boundsMaxY - height);
+
+        // scrollX = clamp(scrollX, boundsMinX, boundsMaxX - (1 / scale * width));
+        // scrollY = clamp(scrollY, boundsMinY, boundsMaxY - (1 / scale * height));
     }
 
     public function startFollow (sprite:GameObject, offsetX:Int = 0, offsetY:Int = 0, lerpX:Float = 1.0, lerpY:Float = 1.0) {

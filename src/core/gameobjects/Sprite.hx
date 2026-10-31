@@ -1,7 +1,7 @@
 package core.gameobjects;
 
 import core.system.Camera;
-import core.util.Util.toRadians;
+import core.util.Util;
 import kha.Image;
 import kha.graphics2.Graphics;
 
@@ -15,8 +15,6 @@ class Sprite extends GameObject {
 
     public var angle:Float;
 
-    var animIndex:Int = -1;
-
     public function new (x:Float = 0.0, y:Float = 0.0, image:Image, ?sizeX:Int, ?sizeY:Int) {
         this.x = x;
         this.y = y;
@@ -29,9 +27,9 @@ class Sprite extends GameObject {
 
     override function render (g2:Graphics, camera:Camera) {
         // TODO: move these to inlined pre and post render?
+        g2.pushRotation(toRadians(angle), x + sizeX * centerX, y + sizeY * centerY);
         g2.pushTranslation(-camera.scrollX * scrollFactorX, -camera.scrollY * scrollFactorY);
         g2.pushScale(camera.scale, camera.scale);
-        g2.pushRotation(toRadians(angle), x + Math.floor(sizeX / 2), y + Math.floor(sizeY / 2));
 
         g2.color = Math.floor(255 * alpha) * 0x1000000 | color;
 
@@ -43,10 +41,12 @@ class Sprite extends GameObject {
             Math.floor(tileIndex / cols) * sizeY,
             sizeX,
             sizeY,
-            Math.floor(x + (flipX ? sizeX : 0)),
-            Math.floor(y + (flipY ? sizeY : 0)),
-            sizeX * (flipX ? -1 : 1),
-            sizeY * (flipY ? -1 : 1)
+            // Math.floor(x + (flipX ? sizeX : 0)),
+            // Math.floor(y + (flipY ? sizeY : 0)),
+            Math.floor(x + ((sizeX - sizeX * scaleX) / 2) + (flipX ? sizeX * scaleX : 0)),
+            Math.floor(y + ((sizeY - sizeY * scaleY) / 2) + (flipY ? sizeY * scaleY : 0)),
+            sizeX * scaleX * (flipX ? -1 : 1),
+            sizeY * scaleY * (flipY ? -1 : 1)
         );
 
         g2.popTransformation();

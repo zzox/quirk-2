@@ -4,6 +4,7 @@ import core.gameobjects.GameObject;
 import core.gameobjects.Sprite;
 import core.system.Camera;
 import core.system.Timers;
+import core.system.Tweens;
 import kha.Image;
 import kha.graphics2.Graphics;
 
@@ -17,19 +18,24 @@ class Scene /* implements Destroyable */ {
     public var game:Game;
 
     public var timers:Timers;
+    public var tweens:Tweens;
 
     public function new () {
         timers = new Timers();
+        tweens = new Tweens();
     }
 
     public function create () {}
 
     public function update (delta:Float) {
         timers.update(delta);
+        tweens.update(delta);
 
         for (e in entities) {
             if (e.active) e.update(delta);
         }
+
+        entities = entities.filter(d -> !d.destroyed);
 
         camera.update(delta);
     }
@@ -37,7 +43,7 @@ class Scene /* implements Destroyable */ {
     // called when drawing, passes in graphics instance
     // overriding render will require you to call begin, clear and end
     // public function render (graphics:Graphics, g4:kha.graphics4.Graphics, clears:Bool) {
-    public function render (graphics:Graphics, clears:Bool) {
+    public function render (graphics:Graphics, clears:Bool, g4:kha.graphics4.Graphics) {
         graphics.begin(clears, camera.bgColor);
 
         for (e in entities) {
@@ -61,5 +67,6 @@ class Scene /* implements Destroyable */ {
     public function destroy () {
         destroyed = true;
         timers.destroy();
+        tweens.destroy();
     }
 }

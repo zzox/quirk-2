@@ -21,8 +21,8 @@ class PreloadScene extends Scene {
         makeSprite(camera.width / 2 - imageAsset.width / 2, camera.height / 4, imageAsset);
     }
 
-    override function render (graphics:Graphics, clears:Bool) {
-        super.render(graphics, clears);
+    override function render (graphics:Graphics, clears:Bool, g4:kha.graphics4.Graphics) {
+        super.render(graphics, clears, g4);
 
         graphics.begin(false);
         graphics.color = 0xffa4aaac;
